@@ -25,4 +25,10 @@ const server = http.createServer(app);
     유저에게 보이고 ws서버로 실시간 통신을 사용하기 위함*/
 const wss = new WebSocketServer({ server });
 
+/* addEventListener처럼 이벤트를 받으면 콜백함수를 실행시킴 */
+/* connection = 누가 우리와 연결됨 */
+/* on() = 연결된 사람의 정보를 socket에 넣어줌 */
+/* socket = 연결된 사람 */
+wss.on("connection", (socket) => console.log(socket));
+
 server.listen(3000, handleListen);
