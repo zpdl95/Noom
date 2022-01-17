@@ -29,6 +29,11 @@ const wss = new WebSocketServer({ server });
 /* connection = 누가 우리와 연결됨 */
 /* on() = 연결된 사람의 정보를 socket에 넣어줌 */
 /* socket = 연결된 사람 */
-wss.on("connection", (socket) => console.log(socket));
+wss.on("connection", (socket) => {
+  console.log("Connected to Browser ✅");
+  socket.on("close", () => console.log("Disconnected from Browser ❌"));
+  socket.on("message", (message) => console.log(message.toString("utf8")));
+  socket.send("안녕 브라우저야?");
+});
 
 server.listen(3000, handleListen);
