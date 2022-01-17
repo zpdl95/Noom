@@ -1,4 +1,6 @@
 import express from "express";
+import http from "http";
+import { WebSocketServer } from "ws";
 
 const app = express();
 /* `https://expressjs.com/ko/guide/using-template-engines.html` Express와 함께 템플리트 엔진을 사용 */
@@ -12,4 +14,15 @@ app.get("/*", (req, res) => res.redirect("/"));
 
 const handleListen = () => console.log(`Listening on http://localhost:3000`);
 
-app.listen(3000, handleListen);
+/* nodejs의 내장모듈 http를 이용한 서버 */
+/* .createServer() = 서버 인스턴스 생성 */
+/* http의 리스너로 express의 app을 사용함 */
+/* express의 서버가 아니라 http내장모듈을 서버로 사용한 이유는 express는 http통신만 가능하기 때문 */
+const server = http.createServer(app);
+
+/* ws와 http를 같은 port에 넣어 사용하는 방법 External HTTP/S server */
+/* http서버 위에 ws서버를 올린 방법. 이렇게 한 이유는 http서버는 노출이되어
+    유저에게 보이고 ws서버로 실시간 통신을 사용하기 위함*/
+const wss = new WebSocketServer({ server });
+
+server.listen(3000, handleListen);
