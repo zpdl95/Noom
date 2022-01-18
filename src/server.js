@@ -25,15 +25,21 @@ const server = http.createServer(app);
     유저에게 보이고 ws서버로 실시간 통신을 사용하기 위함*/
 const wss = new WebSocketServer({ server });
 
+/* 참가자 목록 */
+const sockets = [];
+
 /* addEventListener처럼 이벤트를 받으면 콜백함수를 실행시킴 */
 /* connection = 누가 우리와 연결됨 */
 /* on() = 연결된 사람의 정보를 socket에 넣어줌 */
 /* socket = 연결된 사람 */
 wss.on("connection", (socket) => {
+  sockets.push(socket);
   console.log("Connected to Browser ✅");
   socket.on("close", () => console.log("Disconnected from Browser ❌"));
-  socket.on("message", (message) => console.log(message.toString("utf8")));
-  socket.send("안녕 브라우저야?");
+  socket.on("message", (message) => {
+    /* 모든 참가자에게 메시지를 보냄 */
+    sockets.forEach((aSocket) => aSocket.send(message.toString("utf-8")));
+  });
 });
 
 server.listen(3000, handleListen);
