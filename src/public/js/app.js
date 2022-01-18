@@ -19,6 +19,7 @@ socket.addEventListener("close", () =>
 
 /* backend로 데이터를 보낼때 type을 정해줘야 구별이 가능하기 때문에 만듬 */
 /* 서버로 json오브젝트를 string으로 바꿔서 보내줌 */
+/* 서버로 데이터를 보낼때 string으로 보내야하는 이유는 모든서버가 js서버가 아니기 때문 */
 function makeMessage(type, payload) {
   const message = { type, payload };
   return JSON.stringify(message);

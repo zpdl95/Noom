@@ -33,12 +33,29 @@ const sockets = [];
 /* on() = 연결된 사람의 정보를 socket에 넣어줌 */
 /* socket = 연결된 사람 */
 wss.on("connection", (socket) => {
+  /* 참가자 목록에 추가 */
   sockets.push(socket);
-  console.log("Connected to Browser ✅");
-  socket.on("close", () => console.log("Disconnected from Browser ❌"));
-  socket.on("message", (message) => {
-    /* 모든 참가자에게 메시지를 보냄 */
-    sockets.forEach((aSocket) => aSocket.send(message.toString("utf-8")));
+  /* 참가자 id 설정 */
+  socket["id"] = Date.now();
+  /* 참가자의 기본 nickname 설정 */
+  socket["nickname"] = "Anonymous";
+  console.log(`Connected to '${socket.id}' Browser ✅`);
+  socket.on("close", () =>
+    console.log(`Disconnected from '${socket.id}' Browser ❌`)
+  );
+  socket.on("message", (msg) => {
+    /* string 메시지를 {}형태로 변환 */
+    const message = JSON.parse(msg.toString("utf-8"));
+    switch (message.type) {
+      case "new_message":
+        /* 모든 참가자에게 메시지를 보냄 */
+        sockets.forEach((aSocket) =>
+          aSocket.send(`${socket.nickname}: ${message.payload}`)
+        );
+      case "nickname":
+        /* 참가자 nickname 변경 */
+        socket["nickname"] = message.payload;
+    }
   });
 });
 
