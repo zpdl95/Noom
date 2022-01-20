@@ -6,7 +6,10 @@
 6. npm i express -> Node.js의 사실상의 표준 서버 프레임워크
 7. npm i pug -> html을 조금 더 세련되게 쓸 수 있는 템플릿 언어, express 뷰 엔진
 8. npm i ws -> nodejs에서 사용할 수 있는 websocket protocol을 실행하는 package
+9. npm i socket.io -> socket.io 설치
 
 @babel/node는 웬일인지 실행이 되지 않는다. 해결방법은 -g를 사용하여 전역으로 설치를 하던지 package.json 최상단에 "type": "module"을 추가하여 최신코드로 인식시키는 방법뿐.
 
 프로토콜 = 백신패스처럼 어떤사람이 어딘가에 있는 방에 만나고 그리고 일이 어떻게 진행될지 결정하는 규칙
+
+SocketIO = 프론트엔드와 백엔드의 양방향통신 해주는 프레임워크. websocket을 사용한다. websocket이 작동안되면 http longpoll을 사용. 연결이 끊어졌을때 자동으로 재연결을 시도한다

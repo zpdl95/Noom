@@ -1,6 +1,6 @@
 import express from "express";
 import http from "http";
-import { WebSocketServer } from "ws";
+import { Server } from "socket.io";
 
 const app = express();
 /* `https://expressjs.com/ko/guide/using-template-engines.html` Express와 함께 템플리트 엔진을 사용 */
@@ -18,45 +18,14 @@ const handleListen = () => console.log(`Listening on http://localhost:3000`);
 /* .createServer() = 서버 인스턴스 생성 */
 /* http의 리스너로 express의 app을 사용함 */
 /* express의 서버가 아니라 http내장모듈을 서버로 사용한 이유는 express는 http통신만 가능하기 때문 */
-const server = http.createServer(app);
+const httpServer = http.createServer(app);
 
-/* ws와 http를 같은 port에 넣어 사용하는 방법 External HTTP/S server */
-/* http서버 위에 ws서버를 올린 방법. 이렇게 한 이유는 http서버는 노출이되어
-    유저에게 보이고 ws서버로 실시간 통신을 사용하기 위함*/
-const wss = new WebSocketServer({ server });
+/* socket.io서버를 http서버 위에 올림 */
+/* `http://localhost:3000/socket.io/socket.io.js`위치에 js파일이 있음 */
+const wsServer = new Server(httpServer);
 
-/* 참가자 목록 */
-const sockets = [];
-
-/* addEventListener처럼 이벤트를 받으면 콜백함수를 실행시킴 */
-/* connection = 누가 우리와 연결됨 */
-/* on() = 연결된 사람의 정보를 socket에 넣어줌 */
-/* socket = 연결된 사람 */
-wss.on("connection", (socket) => {
-  /* 참가자 목록에 추가 */
-  sockets.push(socket);
-  /* 참가자 id 설정 */
-  socket["id"] = Date.now();
-  /* 참가자의 기본 nickname 설정 */
-  socket["nickname"] = "Anonymous";
-  console.log(`Connected to '${socket.id}' Browser ✅`);
-  socket.on("close", () =>
-    console.log(`Disconnected from '${socket.id}' Browser ❌`)
-  );
-  socket.on("message", (msg) => {
-    /* string 메시지를 {}형태로 변환 */
-    const message = JSON.parse(msg.toString("utf-8"));
-    switch (message.type) {
-      case "new_message":
-        /* 모든 참가자에게 메시지를 보냄 */
-        sockets.forEach((aSocket) =>
-          aSocket.send(`${socket.nickname}: ${message.payload}`)
-        );
-      case "nickname":
-        /* 참가자 nickname 변경 */
-        socket["nickname"] = message.payload;
-    }
-  });
+wsServer.on("connection", (socket) => {
+  console.log(socket);
 });
 
-server.listen(3000, handleListen);
+httpServer.listen(3000, handleListen);
