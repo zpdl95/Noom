@@ -25,7 +25,13 @@ const httpServer = http.createServer(app);
 const wsServer = new Server(httpServer);
 
 wsServer.on("connection", (socket) => {
-  socket.on("enter_room", (msg, done) => done());
+  /* 모든 이벤트에 대해 실행됨 */
+  socket.onAny((event) => console.log(`socket event: ${event}`));
+  socket.on("enter_room", (roomName, done) => {
+    socket.join(roomName);
+    done();
+    console.log(socket.rooms);
+  });
 });
 
 httpServer.listen(3000, handleListen);
