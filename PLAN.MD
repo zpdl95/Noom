@@ -12,4 +12,4 @@
 
 프로토콜 = 백신패스처럼 어떤사람이 어딘가에 있는 방에 만나고 그리고 일이 어떻게 진행될지 결정하는 규칙
 
-SocketIO = 프론트엔드와 백엔드의 양방향통신 해주는 프레임워크. websocket을 사용한다. websocket이 작동안되면 http longpoll을 사용. 연결이 끊어졌을때 자동으로 재연결을 시도한다
+SocketIO = 프론트엔드와 백엔드의 양방향통신 해주는 프레임워크. websocket을 사용한다. websocket이 작동안되면 http longpoll을 사용. 연결이 끊어졌을때 자동으로 재연결을 시도한다 `https://socket.io/`

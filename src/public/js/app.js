@@ -17,11 +17,21 @@ function addMessage(message) {
   ul.append(li);
 }
 
+function handleMessageSubmit(e) {
+  e.preventDefault();
+  const input = room.querySelector("input");
+  const msg = input.value;
+  socket.emit("new_message", msg, roomName, () => addMessage(`You: ${msg}`));
+  input.value = "";
+}
+
 function showRoom() {
   welcome.hidden = true;
   room.hidden = false;
   const h3 = room.querySelector("h3");
   h3.innerText = `Room ${roomName}`;
+  const form = room.querySelector("form");
+  form.addEventListener("submit", handleMessageSubmit);
 }
 
 function handleRoomSubmit(e) {
@@ -41,3 +51,10 @@ button.addEventListener("submit", handleRoomSubmit);
 socket.on("welcome", () => {
   addMessage("Someone joined!");
 });
+
+socket.on("bye", () => {
+  addMessage("Someone left!");
+});
+
+/* addMessage에 자동으로 서버의 msg값이 들어감 */
+socket.on("new_message", addMessage);
