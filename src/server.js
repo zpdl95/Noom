@@ -30,7 +30,7 @@ wsServer.on("connection", (socket) => {
   socket.on("enter_room", (roomName, done) => {
     socket.join(roomName);
     done();
-    console.log(socket.rooms);
+    socket.to(roomName).emit("welcome");
   });
 });
 
