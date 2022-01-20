@@ -11,8 +11,12 @@ html(lang="en")
         header 
             h1 Noom
         main 
+            #welcome 
+                form
+                    input(placeholder="room name" required, type="text")
+                    button Enter Room
             
-        script(src="/public/js/app.js")
         //- ↓ 이것이 socket.io를 frontend에 설치하는 방법
         script(src="/socket.io/socket.io.js")
+        script(src="/public/js/app.js")
         
