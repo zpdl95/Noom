@@ -9,7 +9,8 @@ function handleRoomSubmit(e) {
   e.preventDefault();
   const input = form.querySelector("input");
   /* firstArgument = 우리가 정하고 싶은 event이름 */
-  /* sec,thrd arg = jsonObject or function 가능*/
+  /* sec,thrd... arg = jsonObject, string number등 가능*/
+  /* last arg = 이벤트 전달 완료시 실행되는 function */
   socket.emit("enter_room", { payload: input.value }, () =>
     console.log("server is done")
   );
