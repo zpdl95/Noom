@@ -30,7 +30,7 @@ function handleNameSubmit(e) {
   e.preventDefault();
   const nameInput = document.querySelector("#name input");
   const nickname = nameInput.value;
-  socket.emit("nickname", nickname, roomName);
+  socket.emit("nickname", nickname);
 }
 
 function showRoom() {

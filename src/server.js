@@ -1,4 +1,5 @@
 import express from "express";
+import { redirect } from "express/lib/response";
 import http from "http";
 import { Server } from "socket.io";
 
@@ -24,6 +25,21 @@ const httpServer = http.createServer(app);
 /* `http://localhost:3000/socket.io/socket.io.js`위치에 js파일이 있음 */
 const wsServer = new Server(httpServer);
 
+function publicRooms() {
+  const {
+    sockets: {
+      adapter: { sids, rooms } /* sids,rooms = Map()형식의 데이터구조를 가짐 */,
+    },
+  } = wsServer;
+  const publicRooms = [];
+  rooms.forEach((_, key) => {
+    if (sids.get(key) === undefined) {
+      publicRooms.push(key);
+    }
+  });
+  return publicRooms;
+}
+
 wsServer.on("connection", (socket) => {
   socket["nickname"] = "익명";
   /* 모든 이벤트에 대해 실행됨 */
@@ -43,7 +59,7 @@ wsServer.on("connection", (socket) => {
     socket.to(room).emit("new_message", `${socket.nickname}: ${msg}`);
     done();
   });
-  socket.on("nickname", (nickname, roomname) => {
+  socket.on("nickname", (nickname) => {
     socket["nickname"] = nickname;
   });
 });

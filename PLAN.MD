@@ -13,3 +13,5 @@
 프로토콜 = 백신패스처럼 어떤사람이 어딘가에 있는 방에 만나고 그리고 일이 어떻게 진행될지 결정하는 규칙
 
 SocketIO = 프론트엔드와 백엔드의 양방향통신 해주는 프레임워크. websocket을 사용한다. websocket이 작동안되면 http longpoll을 사용. 연결이 끊어졌을때 자동으로 재연결을 시도한다 `https://socket.io/`
+
+adapter = 다른 서버들 사이에서 실시간 어플리케이션 동기화를 함. 기본적으로 각 서버는 자신의 메모리풀에 room을 저장함. 이 각 서버들의 room정보를 공유하기 위해서는 서버들이 연결되있어야함. adapter가 이 기능을 함 `https://socket.io/docs/v4/glossary/#adapter`
