@@ -33,6 +33,7 @@ function publicRooms() {
   } = wsServer;
   const publicRooms = [];
   rooms.forEach((_, key) => {
+    /* socketID와 roomID를 비교해서 같지않은 publicRoom을 찾는것 */
     if (sids.get(key) === undefined) {
       publicRooms.push(key);
     }
@@ -41,19 +42,31 @@ function publicRooms() {
 }
 
 wsServer.on("connection", (socket) => {
+  /* 모든 socket에 publicRoom정보 이벤트를 보냄 */
+  wsServer.sockets.emit("room_change", publicRooms());
   socket["nickname"] = "익명";
+
   /* 모든 이벤트에 대해 실행됨 */
   socket.onAny((event) => console.log(`socket event: ${event}`));
   socket.on("enter_room", (roomName, done) => {
     socket.join(roomName);
     done();
     socket.to(roomName).emit("welcome", socket.nickname);
+
+    /* 모든 socket에 publicRoom정보 이벤트를 보냄 */
+    wsServer.sockets.emit("room_change", publicRooms());
   });
+
   /* disconnecting = socket이 room을 떠나기 직전에 실행되는 이벤트 */
   socket.on("disconnecting", () => {
     socket.rooms.forEach((room) =>
       socket.to(room).emit("bye", socket.nickname)
     );
+  });
+
+  /* disconnect = socket이 room을 떠났을때 직전에 실행되는 이벤트 */
+  socket.on("disconnect", () => {
+    wsServer.sockets.emit("room_change", publicRooms());
   });
   socket.on("new_message", (msg, room, done) => {
     socket.to(room).emit("new_message", `${socket.nickname}: ${msg}`);
