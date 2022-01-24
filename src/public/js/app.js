@@ -1,6 +1,6 @@
 /* io() = 자동적으로 socket.io를 실행하는 서버를 찾음 */
 const socket = io();
-
+socket.onAny((event) => console.log(`socket event: ${event}`));
 const welcome = document.getElementById("welcome");
 const welcomeForm = welcome.querySelector("#roomName");
 const welcomeButton = welcomeForm.querySelector("button");
@@ -33,11 +33,11 @@ function handleNameSubmit(e) {
   socket.emit("nickname", nickname);
 }
 
-function showRoom() {
+function showRoom(newCount) {
   welcome.hidden = true;
   room.hidden = false;
   const h3 = room.querySelector("h3");
-  h3.innerText = `Room ${roomName}`;
+  h3.innerText = `Room ${roomName} (${newCount})`;
   const messageForm = room.querySelector("#message");
   messageForm.addEventListener("submit", handleMessageSubmit);
 }
@@ -60,11 +60,15 @@ welcomeForm.addEventListener("submit", handleEnterRoomSubmit);
 welcomeButton.addEventListener("submit", handleEnterRoomSubmit);
 nameForm.addEventListener("submit", handleNameSubmit);
 
-socket.on("welcome", (user) => {
+socket.on("welcome", (user, newCount) => {
+  const h3 = room.querySelector("h3");
+  h3.innerText = `Room ${roomName} (${newCount})`;
   addMessage(`${user} joined!`);
 });
 
-socket.on("bye", (user) => {
+socket.on("bye", (user, newCount) => {
+  const h3 = room.querySelector("h3");
+  h3.innerText = `Room ${roomName} (${newCount})`;
   addMessage(`"${user}" left!`);
 });
 
