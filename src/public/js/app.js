@@ -2,9 +2,10 @@
 const socket = io();
 
 const welcome = document.getElementById("welcome");
-const form = welcome.querySelector("form");
-const button = form.querySelector("button");
+const welcomeForm = welcome.querySelector("#roomName");
+const welcomeButton = welcomeForm.querySelector("button");
 const room = document.getElementById("room");
+const nameForm = document.querySelector("#name");
 
 room.hidden = true;
 
@@ -19,10 +20,17 @@ function addMessage(message) {
 
 function handleMessageSubmit(e) {
   e.preventDefault();
-  const input = room.querySelector("input");
-  const msg = input.value;
+  const messageInput = room.querySelector("#message input");
+  const msg = messageInput.value;
   socket.emit("new_message", msg, roomName, () => addMessage(`You: ${msg}`));
-  input.value = "";
+  messageInput.value = "";
+}
+
+function handleNameSubmit(e) {
+  e.preventDefault();
+  const nameInput = document.querySelector("#name input");
+  const nickname = nameInput.value;
+  socket.emit("nickname", nickname, roomName);
 }
 
 function showRoom() {
@@ -30,30 +38,34 @@ function showRoom() {
   room.hidden = false;
   const h3 = room.querySelector("h3");
   h3.innerText = `Room ${roomName}`;
-  const form = room.querySelector("form");
-  form.addEventListener("submit", handleMessageSubmit);
+  const messageForm = room.querySelector("#message");
+  messageForm.addEventListener("submit", handleMessageSubmit);
 }
 
-function handleRoomSubmit(e) {
+function handleEnterRoomSubmit(e) {
   e.preventDefault();
-  const input = form.querySelector("input");
+  const input = welcomeForm.querySelector("input");
   /* firstArgument = 우리가 정하고 싶은 event이름 */
   /* sec,thrd... arg = jsonObject, string number등 가능*/
   /* last arg = 이벤트 전달 완료시 실행되는 function */
   socket.emit("enter_room", input.value, showRoom);
   roomName = input.value;
   input.value = "";
+  const nickNameForm = welcome.querySelector("#name");
+  const messageForm = room.querySelector("#message");
+  room.insertBefore(nickNameForm, messageForm);
 }
 
-form.addEventListener("submit", handleRoomSubmit);
-button.addEventListener("submit", handleRoomSubmit);
+welcomeForm.addEventListener("submit", handleEnterRoomSubmit);
+welcomeButton.addEventListener("submit", handleEnterRoomSubmit);
+nameForm.addEventListener("submit", handleNameSubmit);
 
-socket.on("welcome", () => {
-  addMessage("Someone joined!");
+socket.on("welcome", (user) => {
+  addMessage(`${user} joined!`);
 });
 
-socket.on("bye", () => {
-  addMessage("Someone left!");
+socket.on("bye", (user) => {
+  addMessage(`"${user}" left!`);
 });
 
 /* addMessage에 자동으로 서버의 msg값이 들어감 */
