@@ -1,7 +1,7 @@
 import express from "express";
-import { redirect } from "express/lib/response";
 import http from "http";
 import { Server } from "socket.io";
+import { instrument } from "@socket.io/admin-ui";
 
 const app = express();
 /* `https://expressjs.com/ko/guide/using-template-engines.html` Express와 함께 템플리트 엔진을 사용 */
@@ -23,7 +23,17 @@ const httpServer = http.createServer(app);
 
 /* socket.io서버를 http서버 위에 올림 */
 /* `http://localhost:3000/socket.io/socket.io.js`위치에 js파일이 있음 */
-const wsServer = new Server(httpServer);
+const wsServer = new Server(httpServer, {
+  /* admin ui를 사용하기 위한 기본환경설정 */
+  cors: {
+    origin: ["https://admin.socket.io"] /* 기본 admin 주소 */,
+    credentials: true,
+  },
+});
+
+instrument(wsServer, {
+  auth: false,
+});
 
 function publicRooms() {
   const {

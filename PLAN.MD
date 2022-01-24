@@ -7,6 +7,7 @@
 7. npm i pug -> html을 조금 더 세련되게 쓸 수 있는 템플릿 언어, express 뷰 엔진
 8. npm i ws -> nodejs에서 사용할 수 있는 websocket protocol을 실행하는 package
 9. npm i socket.io -> socket.io 설치
+10. npm i "@socket.io/admin-ui" -> socket.io의 관리자 UI 패널 `https://socket.io/docs/v4/admin-ui/`
 
 @babel/node는 웬일인지 실행이 되지 않는다. 해결방법은 -g를 사용하여 전역으로 설치를 하던지 package.json 최상단에 "type": "module"을 추가하여 최신코드로 인식시키는 방법뿐.
 
