@@ -1,89 +1,48 @@
 /* io() = 자동적으로 socket.io를 실행하는 서버를 찾음 */
 const socket = io();
-socket.onAny((event) => console.log(`socket event: ${event}`));
-const welcome = document.getElementById("welcome");
-const welcomeForm = welcome.querySelector("#roomName");
-const welcomeButton = welcomeForm.querySelector("button");
-const room = document.getElementById("room");
-const nameForm = document.querySelector("#name");
 
-room.hidden = true;
+const myFace = document.getElementById("myface");
+const muteBtn = document.getElementById("mute");
+const cameraBtn = document.getElementById("camera");
 
-let roomName;
+let myStream;
+let muted = false;
+let cameraOff = false;
 
-function addMessage(message) {
-  const ul = room.querySelector("ul");
-  const li = document.createElement("li");
-  li.innerText = message;
-  ul.append(li);
-}
-
-function handleMessageSubmit(e) {
-  e.preventDefault();
-  const messageInput = room.querySelector("#message input");
-  const msg = messageInput.value;
-  socket.emit("new_message", msg, roomName, () => addMessage(`You: ${msg}`));
-  messageInput.value = "";
-}
-
-function handleNameSubmit(e) {
-  e.preventDefault();
-  const nameInput = document.querySelector("#name input");
-  const nickname = nameInput.value;
-  socket.emit("nickname", nickname);
-}
-
-function showRoom(newCount) {
-  welcome.hidden = true;
-  room.hidden = false;
-  const h3 = room.querySelector("h3");
-  h3.innerText = `Room ${roomName} (${newCount})`;
-  const messageForm = room.querySelector("#message");
-  messageForm.addEventListener("submit", handleMessageSubmit);
-}
-
-function handleEnterRoomSubmit(e) {
-  e.preventDefault();
-  const input = welcomeForm.querySelector("input");
-  /* firstArgument = 우리가 정하고 싶은 event이름 */
-  /* sec,thrd... arg = jsonObject, string number등 가능*/
-  /* last arg = 이벤트 전달 완료시 실행되는 function */
-  socket.emit("enter_room", input.value, showRoom);
-  roomName = input.value;
-  input.value = "";
-  const nickNameForm = welcome.querySelector("#name");
-  const messageForm = room.querySelector("#message");
-  room.insertBefore(nickNameForm, messageForm);
-}
-
-welcomeForm.addEventListener("submit", handleEnterRoomSubmit);
-welcomeButton.addEventListener("submit", handleEnterRoomSubmit);
-nameForm.addEventListener("submit", handleNameSubmit);
-
-socket.on("welcome", (user, newCount) => {
-  const h3 = room.querySelector("h3");
-  h3.innerText = `Room ${roomName} (${newCount})`;
-  addMessage(`${user} joined!`);
-});
-
-socket.on("bye", (user, newCount) => {
-  const h3 = room.querySelector("h3");
-  h3.innerText = `Room ${roomName} (${newCount})`;
-  addMessage(`"${user}" left!`);
-});
-
-/* addMessage에 자동으로 서버의 msg값이 들어감 */
-socket.on("new_message", addMessage);
-
-socket.on("room_change", (rooms) => {
-  const roomList = welcome.querySelector("ul");
-  roomList.innerHTML = "";
-  if (rooms.length === 0) {
-    return;
+async function getMedia() {
+  try {
+    myStream = await navigator.mediaDevices.getUserMedia({
+      audio: true,
+      video: true,
+    });
+    console.dir(myStream);
+    myFace.srcObject = myStream;
+  } catch (error) {
+    console.dir(error);
   }
-  rooms.forEach((room) => {
-    const li = document.createElement("li");
-    li.innerText = room;
-    roomList.append(li);
-  });
-});
+}
+
+getMedia();
+
+function handleMuteClick() {
+  if (!muted) {
+    muteBtn.innerText = "UnMuted";
+    muted = true;
+  } else {
+    muteBtn.innerText = "Muted";
+    muted = false;
+  }
+}
+
+function handleCameraClick() {
+  if (!cameraOff) {
+    cameraBtn.innerText = "Turn Camera On";
+    cameraOff = true;
+  } else {
+    cameraBtn.innerText = "Turn Camera Off";
+    cameraOff = false;
+  }
+}
+
+muteBtn.addEventListener("click", handleMuteClick);
+cameraBtn.addEventListener("click", handleCameraClick);

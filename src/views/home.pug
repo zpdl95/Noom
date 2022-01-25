@@ -10,22 +10,12 @@ html(lang="en")
     body 
         header 
             h1 Noom
-        main 
-            div#welcome 
-                form#name
-                    input(placeholder="nick name" required, type="text")
-                    button Set
-                form#roomName
-                    input(placeholder="room name" required, type="text")
-                    button Enter Room
-                h4 Open Rooms:
-                ul
-            div#room
-                h3
-                ul
-                form#message
-                    input(placeholder="message..." required, type="text")
-                    button Send
+        main
+            div#myStream
+                //- playsinline은 영상 재생시 전체화면으로 가는것을 막는다
+                video#myface(autoplay, playsinline, width="400", height="400")
+                button#mute Mute
+                button#camera Turn Camera Off
         //- ↓ 이것이 socket.io를 frontend에 설치하는 방법
         script(src="/socket.io/socket.io.js")
         script(src="/public/js/app.js")
