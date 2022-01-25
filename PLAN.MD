@@ -20,7 +20,18 @@ adapter = 다른 서버들 사이에서 실시간 어플리케이션 동기화�
 자바스크립트에 있는 navigator.mediaDevices 를 이용해 화면공유, 카메라, 오디오를 사용할 수 있다 `https://developer.mozilla.org/ko/docs/Web/API/MediaDevices`
 
 자바스크립트에 있는 RTCPeerConnection()을 이용해 피어 투 피어 커넥션을 만든다.
+`https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection`
 getUserMedia()를 사용해 stream과 track을 만든다.
 RTCPeerConnection().addTrack()을 사용해 커넥션에 track을 넣는다.
 RTCPeerConnection().createOffer()를 사용해 offer(제공자, 초대장)를 생성한다
 RTCPeerConnection().setLocalDescription(offer)를 사용해 생성된 offer로 연결을 구성함
+생성된 offer을 서버로 보냄
+서버에서 상대편에 offer을 보냄
+offer를 받음
+RTCPeerConnection().setRemoteDescription(offer)를 사용해 상대지점에 offer로 연결을 구성함
+RTCPeerConnection().createAnswer()을 사용해 answer(답장)을 생성한다
+RTCPeerConnection().setLocalDescription(answer)을 사용해 생성된 answer로 연결을 구성함
+생성된 answer을 서버로 보냄
+서버에서 다시 상대편에 answer을 보냄
+answer을 받음
+RTCPeerConnection().setRemoteDescription(answer)을 사용해 상대지점에 answer로 연결을 구성함

@@ -102,18 +102,19 @@ camerasSelect.addEventListener("input", handleCameraChange);
 const welcome = document.getElementById("welcome");
 const welcomeForm = welcome.querySelector("form");
 
-async function startMedia() {
+async function initCall() {
   welcome.hidden = true;
   call.hidden = false;
   await getMedia();
   makeConnection();
 }
 
-function handleWelcomeSubmit(e) {
+async function handleWelcomeSubmit(e) {
   e.preventDefault();
   const input = welcomeForm.querySelector("input");
   roomName = input.value;
-  socket.emit("join_room", roomName, startMedia);
+  await initCall();
+  socket.emit("join_room", roomName);
 }
 
 welcomeForm.addEventListener("submit", handleWelcomeSubmit);
@@ -131,7 +132,23 @@ socket.on("welcome", async () => {
 });
 
 // //Peer B
-socket.on("offer", (offer) => {});
+/* offer를 수신받음 */
+socket.on("offer", async (offer) => {
+  /* 수신받은 offer로 원격연결을 구성함 */
+  myPeerConnection.setRemoteDescription(offer);
+  /* answer생성, offer의 답장회신 */
+  const answer = await myPeerConnection.createAnswer();
+  /* 생성된 answer로 연결을 구성함 */
+  myPeerConnection.setLocalDescription(answer);
+  /* 서버로 answer을 송신 */
+  socket.emit("answer", answer, roomName);
+});
+
+// //Peer A
+socket.on("answer", (answer) => {
+  /* 수신받은 answer로 원격연결을 구성함 */
+  myPeerConnection.setRemoteDescription(answer);
+});
 
 // RTC code
 
