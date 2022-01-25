@@ -24,4 +24,12 @@ const httpServer = http.createServer(app);
 /* `http://localhost:3000/socket.io/socket.io.js`위치에 js파일이 있음 */
 const wsServer = new Server(httpServer);
 
+wsServer.on("connection", (socket) => {
+  socket.on("join_room", (roomName, done) => {
+    socket.join(roomName);
+    done();
+    socket.to(roomName).emit("welcome");
+  });
+});
+
 httpServer.listen(3000, handleListen);
