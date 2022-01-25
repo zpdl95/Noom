@@ -14,6 +14,7 @@ let myStream;
 let muted = false;
 let cameraOff = false;
 let roomName;
+let myPeerConnection;
 
 async function getCameras() {
   try {
@@ -101,10 +102,11 @@ camerasSelect.addEventListener("input", handleCameraChange);
 const welcome = document.getElementById("welcome");
 const welcomeForm = welcome.querySelector("form");
 
-function startMedia() {
+async function startMedia() {
   welcome.hidden = true;
   call.hidden = false;
-  getMedia();
+  await getMedia();
+  makeConnection();
 }
 
 function handleWelcomeSubmit(e) {
@@ -118,6 +120,26 @@ welcomeForm.addEventListener("submit", handleWelcomeSubmit);
 
 // Socket code
 
-socket.on("welcome", () => {
-  console.log("Someone Joined");
+// //Peer A
+socket.on("welcome", async () => {
+  /* offer생성, 피어 투 피어의 초대장 비슷한것 */
+  const offer = await myPeerConnection.createOffer();
+  /* 생성된 offer로 연결을 구성함 */
+  myPeerConnection.setLocalDescription(offer);
+  /* 서버로 offer를 송신 */
+  socket.emit("offer", offer, roomName);
 });
+
+// //Peer B
+socket.on("offer", (offer) => {});
+
+// RTC code
+
+function makeConnection() {
+  /* 피어 투 피어 커넥션을 만든다 */
+  myPeerConnection = new RTCPeerConnection();
+  myStream
+    .getTracks()
+    /* 각 스트림트랙을 커넥션에 넣어준다 */
+    .forEach((track) => myPeerConnection.addTrack(track, myStream));
+}

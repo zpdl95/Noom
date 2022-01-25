@@ -18,3 +18,9 @@ SocketIO = 프론트엔드와 백엔드의 양방향통신 해주는 프레임�
 adapter = 다른 서버들 사이에서 실시간 어플리케이션 동기화를 함. 기본적으로 각 서버는 자신의 메모리풀에 room을 저장함. 이 각 서버들의 room정보를 공유하기 위해서는 서버들이 연결되있어야함. adapter가 이 기능을 함 `https://socket.io/docs/v4/glossary/#adapter`
 
 자바스크립트에 있는 navigator.mediaDevices 를 이용해 화면공유, 카메라, 오디오를 사용할 수 있다 `https://developer.mozilla.org/ko/docs/Web/API/MediaDevices`
+
+자바스크립트에 있는 RTCPeerConnection()을 이용해 피어 투 피어 커넥션을 만든다.
+getUserMedia()를 사용해 stream과 track을 만든다.
+RTCPeerConnection().addTrack()을 사용해 커넥션에 track을 넣는다.
+RTCPeerConnection().createOffer()를 사용해 offer(제공자, 초대장)를 생성한다
+RTCPeerConnection().setLocalDescription(offer)를 사용해 생성된 offer로 연결을 구성함
